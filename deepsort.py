@@ -13,7 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'thirdparty/mmdetection'
 
 from detector import build_detector
 from deep_sort import build_tracker
-from utils.draw import draw_boxes
+from utils.draw_w_tracks import draw_boxes
 from utils.parser import get_config
 from utils.log import get_logger
 from utils.io import write_results
@@ -168,19 +168,22 @@ class VideoTracker(object):
             cls_conf = cls_conf[mask]
 
             # do tracking
-            outputs, detections = self.deepsort.update(bbox_xywh, cls_conf, im)
+            outputs, detections = self.deepsort.update(bbox_xywh, cls_conf, cls_ids, im)
 
             # draw boxes for visualization
             if len(outputs) > 0:
                 bbox_tlwh = []
-                bbox_xyxy = outputs[:, :4]
-                identities = outputs[:, -1]
-                ori_im = draw_boxes(ori_im, bbox_xyxy, identities)      # 画框到原始图片上
+                #print(outputs[0])
+                bbox_xyxy = np.array(outputs[:, :4],dtype=np.int)
+                identities = outputs[:, -2]
+                class_names = outputs[:, -1]
+                
+                ori_im = draw_boxes(ori_im, bbox_xyxy, identities, class_names)      # 画框到原始图片上
 
                 for bb_xyxy in bbox_xyxy:
                     bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
 
-                results.append((idx_frame - 1, bbox_tlwh, identities))
+                results.append((idx_frame - 1, bbox_tlwh, identities,class_names))
 
             end = time.time()
 

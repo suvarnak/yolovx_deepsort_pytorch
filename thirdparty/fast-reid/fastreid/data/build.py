@@ -6,10 +6,11 @@
 
 import os
 import torch
-from torch._six import container_abcs, string_classes, int_classes
+from torch._six import  string_classes
 from torch.utils.data import DataLoader
 from fastreid.utils import comm
 
+int_classes = int 
 from . import samplers
 from .common import CommDataset
 from .datasets import DATASET_REGISTRY
