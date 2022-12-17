@@ -122,7 +122,7 @@ class VideoTracker(object):
 
             # create video writer
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            self.writer = cv2.VideoWriter(self.save_video_path, fourcc, 15, (self.im_width, self.im_height))        # defualt, fps=20
+            self.writer = cv2.VideoWriter(self.save_video_path, fourcc, 25, (self.im_width, self.im_height))        # defualt, fps=20
 
             # logging
             self.logger.info("Save results to {}".format(self.args.save_path))
@@ -168,7 +168,7 @@ class VideoTracker(object):
             cls_conf = cls_conf[mask]
 
             # do tracking
-            outputs, detections = self.deepsort.update(bbox_xywh, cls_conf, cls_ids, im)
+            outputs, detections, confirmed_tracks, tentative_tracks  = self.deepsort.update(bbox_xywh, cls_conf, cls_ids, im)
 
             # draw boxes for visualization
             if len(outputs) > 0:
@@ -177,13 +177,27 @@ class VideoTracker(object):
                 bbox_xyxy = np.array(outputs[:, :4],dtype=np.int)
                 identities = outputs[:, -2]
                 class_names = outputs[:, -1]
-                
-                ori_im = draw_boxes(ori_im, bbox_xyxy, identities, class_names)      # 画框到原始图片上
-
+                from itertools import groupby
+                class_counts = [(i, len(list(c))) for i,c in groupby(sorted(class_names))]      # Create value-count pairs as list of tuple
+                #person_count = class_counts['person'] #len([i for i in class_names if i == 'person'])
+                nl = '\n'
+                ori_im = draw_boxes(ori_im, bbox_xyxy, identities, class_names)  
+                summary = f"Scene Summary: {nl}"      
+                summary = summary + f"Active tracks: {confirmed_tracks} {nl}"      
+                for i in range(min(5, len(class_counts))):
+                    summary = summary + f"Total {class_counts[i][1]} {class_counts[i][0]} {nl}"
+                print(summary) 
+                #cv2.rectangle(ori_im,(2, 2),(300,100),(255,255,255),2)
+                t_size = cv2.getTextSize(summary, cv2.FONT_HERSHEY_PLAIN, 1, 1)[1]
+                print(t_size)
+                y0, dy = 8, 45
+                for i, line in enumerate(summary.split('\n')):
+                    y = y0 + i*15
+                    cv2.putText(ori_im, line, (4, y ), cv2.FONT_HERSHEY_PLAIN, 1, [0,0,255], 1)
+                #cv2.putText(ori_im,summary,(4,4+(2*t_size[1])+4), cv2.FONT_HERSHEY_PLAIN, 1, [255,255,255], 1)
                 for bb_xyxy in bbox_xyxy:
                     bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
-
-                results.append((idx_frame - 1, bbox_tlwh, identities,class_names))
+                results.append((idx_frame - 1, bbox_tlwh, identities, class_names))
 
             end = time.time()
 

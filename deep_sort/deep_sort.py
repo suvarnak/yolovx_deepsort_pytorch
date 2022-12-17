@@ -56,7 +56,11 @@ class DeepSort(object):
             outputs.append(np.array([x1,y1,x2,y2,track_id, track.class_name]))      # 每个元素的输出信息
         if len(outputs) > 0:
             outputs = np.stack(outputs,axis=0)
-        return outputs, detections
+        confirmed_tracks = [i for i in self.tracker.tracks if i.is_confirmed]
+        tentative_tracks = [i for i in self.tracker.tracks if i.is_tentative]
+        print("Confirmed tracks ", len(confirmed_tracks))
+        print("Tentative tracks ", len(tentative_tracks))
+        return outputs, detections, len(confirmed_tracks), len(tentative_tracks)
 
 
     """

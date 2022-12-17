@@ -80,6 +80,7 @@ class Tracker:
 
         # Update distance metric.
         active_targets = [t.track_id for t in self.tracks if t.is_confirmed()]
+        print("ACTIVE" , active_targets)
         features, targets = [], []
         for track in self.tracks:
             if not track.is_confirmed():
@@ -118,7 +119,7 @@ class Tracker:
         iou_track_candidates = unconfirmed_tracks + [
             k for k in unmatched_tracks_a if
             self.tracks[k].time_since_update == 1]
-        unmatched_tracks_a = [
+        unmatched_trackTentatives_a = [
             k for k in unmatched_tracks_a if
             self.tracks[k].time_since_update != 1]
         matches_b, unmatched_tracks_b, unmatched_detections = \
@@ -133,7 +134,6 @@ class Tracker:
     def _initiate_track(self, detection):
         mean, covariance = self.kf.initiate(detection.to_xyah())
         class_name = detection.get_class()
-        print("CLASSNAME of detection", class_name)
         self.tracks.append(Track(
             mean, covariance, self._next_id, self.n_init, self.max_age,
             detection.feature, class_name))
