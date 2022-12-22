@@ -1,7 +1,8 @@
 YOLOV6:
-  WEIGHT: "./models/yolov6/yolov6l.pt"
+  WEIGHT: "/home/skadam/workspace/sensor_network/aim/hbm/repository/yolovx_deepsort_pytorch/models/yolov6/yolov6s.pt"
+  DATASET: "/home/skadam/workspace/sensor_network/aim/hbm/repository/yolovx_deepsort_pytorch/detector/YOLOV6/data/coco.yaml"
 
-  DATASET: ./detector/YOLOV6/data/coco.yaml
+  #DATASET: ./aim/hbm/repository/yolovx_deepsort_pytorch/detector/YOLOV6/data/coco.yaml
   IMG_SIZE: 640
   SCORE_THRESH: 0.35
   CONF_THRESH: 0.35 #0.25

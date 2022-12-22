@@ -8,7 +8,7 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
-from yolov6.utils.events import LOGGER
+from .events import LOGGER
 
 try:
     import thop  # for FLOPs computation

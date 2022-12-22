@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
-from detector.YOLOV6.yolov6.utils import events 
+from ..detector.YOLOV6.yolov6.utils import events 
 
-class_names = events.load_yaml("detector/YOLOV6/data/coco.yaml")['names']
+class_names = events.load_yaml("./aim/hbm/repository/yolovx_deepsort_pytorch/detector/YOLOV6/data/coco.yaml")['names']
 palette = (2 ** 11 - 1, 2 ** 15 - 1, 2 ** 20 - 1)
 
 

@@ -1,8 +1,9 @@
 # vim: expandtab:ts=4:sw=4
 import numpy as np
-from detector.YOLOV6.yolov6.utils import events 
+import repository.yolovx_deepsort_pytorch.detector.YOLOV6.yolov6.utils.events as events
+#import detector.YOLOV6.yolov6.utils.events 
 
-class_names = events.load_yaml("detector/YOLOV6/data/coco.yaml")['names']
+class_names = events.load_yaml("./aim/hbm/repository/yolovx_deepsort_pytorch/detector/YOLOV6/data/coco.yaml")['names']
 
 class Detection(object):
     """
