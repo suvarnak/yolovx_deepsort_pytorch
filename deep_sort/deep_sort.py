@@ -38,22 +38,22 @@ class DeepSort(object):
         boxes = np.array([d.tlwh for d in detections])          # 获取所有检测框
         scores = np.array([d.confidence for d in detections])   # 获取所有检测框对应的得分
         indices = non_max_suppression(boxes, self.nms_max_overlap, scores)
-        detections = [detections[i] for i in indices]           # 筛选出有效的detection
-
-        # update tracker        # ------------卡尔曼滤波预测阶段
-        self.tracker.predict()          # 卡尔曼滤波估计值
-        self.tracker.update(detections) # 卡尔曼滤波观测值  + 精确值；  精确值 = A * 卡尔曼滤波估计值 + B * 卡尔曼滤波观测值
+        #detections = [(detections[i], scores[i]) for i in indices]           
+        detections = [detections[i] for i in indices]           
+        scores = [scores[i] for i in indices]           # to retain the scores of detection after NMS
+        self.tracker.predict()          
+        self.tracker.update(detections, scores) 
 
         # output bbox identities
         outputs = []
+        #print("~~~~~~~~~~~~",boxes, scores, self.tracker.tracks) #track.class_name)
         for track in self.tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
                 continue
             box = track.to_tlwh()
             x1,y1,x2,y2 = self._tlwh_to_xyxy(box)
             track_id = track.track_id
-            #print("~~~~~~~~~~~~",track.class_name)
-            outputs.append(np.array([x1,y1,x2,y2,track_id, track.class_name]))      # 每个元素的输出信息
+            outputs.append(np.array([x1,y1,x2,y2,track_id, track.class_name, track.score]))      
         if len(outputs) > 0:
             outputs = np.stack(outputs,axis=0)
         confirmed_tracks = [i for i in self.tracker.tracks if i.is_confirmed]

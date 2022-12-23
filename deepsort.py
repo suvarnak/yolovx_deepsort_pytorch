@@ -173,7 +173,7 @@ class VideoTracker(object):
             # draw boxes for visualization
             if len(outputs) > 0:
                 bbox_tlwh = []
-                #print(outputs[0])
+                print("OOOOOOOOO",outputs[0])
                 bbox_xyxy = np.array(outputs[:, :4],dtype=np.int)
                 identities = outputs[:, -2]
                 class_names = outputs[:, -1]

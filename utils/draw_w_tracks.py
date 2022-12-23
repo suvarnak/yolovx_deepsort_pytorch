@@ -16,7 +16,7 @@ def compute_color_for_labels(label):
 def compute_class_name_for_label(id):
     return class_names[id]
 
-def draw_boxes(img, bbox, identities=None, class_names=None, offset=(0,0), score = []):
+def draw_boxes(img, bbox, identities=None, class_names=None, offset=(0,0), scores = []):
     for i,box in enumerate(bbox):
         x1,y1,x2,y2 = [int(i) for i in box]
         x1 += offset[0]
@@ -28,14 +28,14 @@ def draw_boxes(img, bbox, identities=None, class_names=None, offset=(0,0), score
         classname = class_names[i] if class_names is not None else "Unknown"    
         color = compute_color_for_labels(id)
         label = '{}{:d}'.format(classname, id )
-        # score = score
+        score = scores[i] if scores is not None else "Unknown score"    
         t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
         cv2.rectangle(img,(x1, y1),(x2,y2),color,2)
         cv2.rectangle(img,(x1, y1),(x1+t_size[0]+3,y1+t_size[1]+4), color,-1)
         #label = str(compute_class_name_for_label(label)+label)
-        cv2.putText(img,label,(x1,y1+t_size[1]+4), cv2.FONT_HERSHEY_PLAIN, 1, [255,255,255], 1)
         if len(score) != 0:
-            cv2.putText(img,str(score[i]),(x1,y1+t_size[1]+10), cv2.FONT_HERSHEY_PLAIN, 2, [255,255,255], 2)
+            label = "{} {}".format(label,score)
+        cv2.putText(img,label,(x1,y1+t_size[1]+4), cv2.FONT_HERSHEY_PLAIN, 1, [255,255,255], 1)
 
     return img
 
