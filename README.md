@@ -1,3 +1,5 @@
+[This repo is formed from MoT tracking iumplementation of DeepSORT that can be used with "ANY" yolo-family detector.  This repo extends the MoT implemntation to add the count of objects visible in scene and if required tracks of objects are stored in CSV. 
+
 # Table of contents
 - [Table of contents](#table-of-contents)
 - [Deep Sort with PyTorch(yolo-all)](#deep-sort-with-pytorchyolo-all)
